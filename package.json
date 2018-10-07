@@ -1,0 +1,30 @@
+{
+  "name": "scrape-fso",
+  "version": "1.0.0",
+  "description": "Scrape the filmeserialeonline site to get all the videos in a season.",
+  "main": "src/index.js",
+  "bin": {
+    "scrape-fso": "./bin/cli.js"
+  },
+  "engines": {
+    "node": ">=8"
+  },
+  "preferGlobal": true,
+  "dependencies": {
+    "args-parser": "1.1.0",
+    "cheerio": "1.0.0-rc.2",
+    "debug": "4.0.1",
+    "puppeteer": "1.8.0",
+    "request": "2.88.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "scrape",
+    "web"
+  ],
+  "author": "Marius Lazar <mariuslazar93@gmail.com> (https://www.github.com/mariuslazar93)",
+  "license": "MIT"
+}
