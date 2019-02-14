@@ -12,7 +12,6 @@ const options = {
   saveToFile: true,
   uploadToS3: false,
   linksFileName: 'links.json',
-  episodesFileName: 'episodes.json',
 };
 
 if (!args.name) {
@@ -54,13 +53,16 @@ Promise.resolve()
   })
   .then((episodes) => {
     logger('episodes: ', episodes);
+    const fileName = args.name.toLocaleLowerCase().trim().replace(/\s+/g, '-');
+    const fileKey = `${fileName}-${args.season}.json`;
+    const fileContent = JSON.stringify(episodes, null, 2);
+
     if (options.saveToFile) {
-      fs.writeFileSync(options.episodesFileName, JSON.stringify(episodes, null, 2));
+      fs.writeFileSync(fileKey, fileContent);
     }
 
     if (options.uploadToS3) {
-      const fileKey = args.name.toLocaleLowerCase().trim().replace(/\s+/g, '-');
-      return s3.upload(`${fileKey}.json`, JSON.stringify(episodes, null, 2));
+      return s3.upload(fileKey, fileContent);
     }
   })
   .catch((error) => {
