@@ -12,13 +12,13 @@ const getLinks = (coverPage, seasonNumber) => {
         const $ = cheerio.load(html);
 
         const episodesLinks = [];
-        $('#seasons .se-t').each(function(i, elem){
-          if ($(this).text() === seasonNumber) {
-            logger('Found season %s', seasonNumber);
+        $('#seasons .se-t').each(function() {
+          logger('Found season %s', $(this).text());
+          if ($(this).text() == seasonNumber) {
             $(this).parent()
               .parent()
               .find('.episodiotitle')
-              .each(function(i, elem) {
+              .each(function() {
                 const a = $(this).find('a');
                 episodesLinks.push(a.attr('href'));
               });
@@ -36,10 +36,9 @@ const getLinks = (coverPage, seasonNumber) => {
 async function scrape(links, videoIframeWrapperSelector) {
   // create browser instace and fake user agent
   const browser = await puppeteer.launch({
+    headless: false,
     args: [
       '--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36',
-      '--no-sandbox',
-      '--disable-setuid-sandbox'
     ],
   });
 
@@ -50,12 +49,13 @@ async function scrape(links, videoIframeWrapperSelector) {
 
 // scrape the pages in series so that we don't get blocked
 async function scrapeSerialPages(browser, links, videoIframeWrapperSelector) {
-  return links.reduce(async (acc, link) => {
+  return links.reduce(async (acc, link, index) => {
     const data = await acc;
 
     try {
       const scrapeData = await scrapePage(browser, link, videoIframeWrapperSelector);
       if (scrapeData) {
+        scrapeData.title = `Episode ${index + 1}: ${scrapeData.title}`;
         data.push(scrapeData);
       } else {
         throw 'No data';
@@ -87,7 +87,7 @@ async function scrapePage(browser, url, videoIframeWrapperSelector) {
     const title = document.title;
     const rapidVideoWrapper = document.querySelector(videoWrapperSelector);
     if (!rapidVideoWrapper) {
-      throw new Error('No rapid video wrapper');
+      throw new Error(`${videoWrapperSelector} video wrapper was not found`);
     }
     const videoSrc = rapidVideoWrapper.querySelector('iframe').src;
 
