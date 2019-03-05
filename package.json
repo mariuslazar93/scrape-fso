@@ -1,6 +1,6 @@
 {
   "name": "scrape-fso",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Scrape the filmeserialeonline site to get all the videos url and avoid the ads and popups.",
   "main": "src/index.js",
   "bin": {
